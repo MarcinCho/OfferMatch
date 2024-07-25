@@ -1,2 +1,2 @@
-# OfferMatch
-Gateway to multi-repo web app Offer Match
+# Service Match
+Gateway to multi-repo web app Service Match
