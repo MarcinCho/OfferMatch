@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: projects_sm
+  data:
+    mongodb:
+      host: "localhost"
+      port: 27017
+      database: "service_match"
+  cloud:
+    config:
+      enabled: false
+    bus:
+      enabled: false
