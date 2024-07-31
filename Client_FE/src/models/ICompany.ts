@@ -5,5 +5,5 @@ export interface ICompany {
   phoneNumber: string;
   email: string;
   address: string;
-  contactPerson: string; // in future it will be user interface
+  contactPerson: string; // in the future, it will be user interface
 }

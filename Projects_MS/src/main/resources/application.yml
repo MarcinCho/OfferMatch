@@ -1,6 +1,6 @@
 spring:
   application:
-    name: projects_sm
+    name: projects
   data:
     mongodb:
       host: "localhost"
