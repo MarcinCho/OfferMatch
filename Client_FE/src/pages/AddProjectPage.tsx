@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ProjectModel } from "../models/IProject";
+import { IProject } from "../models/IProject";
 
 export const AddProjectPage = ({
   addProject,
 }: {
-  addProject: (project: ProjectModel) => void;
+  addProject: (project: IProject) => void;
 }) => {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("B2C");
@@ -23,7 +23,7 @@ export const AddProjectPage = ({
 
   const submitForm = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const newProject: ProjectModel = {
+    const newProject: IProject = {
       title,
       type,
       description,
@@ -36,7 +36,7 @@ export const AddProjectPage = ({
     };
     addProject(newProject);
     toast.success("Project added!");
-    return navigate("/companies");
+    return navigate("/project");
   };
 
   return (

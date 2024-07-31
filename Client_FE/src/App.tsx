@@ -13,6 +13,8 @@ import { ProjectsPage } from "./pages/ProjectsPage";
 import { SingleProjectPage } from "./pages/SingleProjectPage";
 import { IProject } from "./models/IProject";
 import { projectLoader } from "./components/projectLoader";
+import { AddCompanyPage } from "./pages/AddCompanyPage";
+import { ICompany } from "./models/ICompany";
 
 const addProject = async (project: IProject) => {
   const ppp = await fetch("http://localhost:8080/api/project", {
@@ -25,6 +27,11 @@ const addProject = async (project: IProject) => {
   return ppp;
 };
 
+const addCompany = async (company: ICompany) => {
+  console.log(company);
+  return "ok";
+};
+
 export const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -34,6 +41,10 @@ export const App = () => {
         <Route
           path="/project/add"
           element={<AddProjectPage addProject={addProject} />}
+        />
+        <Route
+          path="/company/add"
+          element={<AddCompanyPage addCompany={addCompany} />}
         />
         <Route
           path="/project/:id"
