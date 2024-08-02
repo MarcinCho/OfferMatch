@@ -15,7 +15,8 @@ Key languages technologies and frameworks:
 * DevOps:
   - Docker
   - Git
-  - Kubernetes
+* Documentation:
+  - OpenApi
 
 ### Description
 ServiceMatch is a web application designed to connect clients with service providers, implemented features

@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Spinner } from "../components/Spinner";
 import { Project } from "../components/Project";
-import { ProjectModel } from "../models/IProject";
+import { IProject } from "../models/IProject";
 
 export const ProjectsPage = () => {
-  const [projects, setProjects] = useState<ProjectModel[]>([]);
+  const [projects, setProjects] = useState<IProject[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const apiUrl = "http://localhost:8080/api/project";
       try {
-        const res = await fetch(apiUrl);
+        const res = await fetch("http://localhost:8080/api/project", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         const data = await res.json();
         setProjects(data);
       } catch (error) {
@@ -35,7 +40,7 @@ export const ProjectsPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {projects.map((project) => (
-                <Project key={project.id} project={project as ProjectModel} />
+                <Project key={project.id} project={project as IProject} />
               ))}
             </div>
           )}

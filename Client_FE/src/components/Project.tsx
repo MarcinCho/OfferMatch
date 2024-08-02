@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { ProjectModel } from "../models/IProject";
+import React from "react";
+import { IProject } from "../models/IProject";
 import { Link } from "react-router-dom";
-export const Project = ({ project }: { project: ProjectModel }) => {
-  //   const [fullDesc, setFullDesc] = useState(false);
-
+export const Project = ({ project }: { project: IProject }) => {
   return (
     <div className="bg-blue-400 rounded-xl shadow md relative text-gray-700">
       <div className="p-4">

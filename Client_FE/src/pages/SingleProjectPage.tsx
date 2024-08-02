@@ -1,8 +1,8 @@
 import { useLoaderData } from "react-router-dom";
-import { ProjectModel } from "../models/IProject";
+import { IProject } from "../models/IProject";
 
 export const SingleProjectPage = () => {
-  const project = useLoaderData() as ProjectModel;
+  const project = useLoaderData() as IProject;
 
   return (
     <div className="container m-auto max-w-3xl py-24">
