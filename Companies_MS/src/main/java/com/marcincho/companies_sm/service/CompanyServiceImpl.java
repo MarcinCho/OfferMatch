@@ -1,6 +1,7 @@
 package com.marcincho.companies_sm.service;
 
 import com.marcincho.companies_sm.dto.CompanyDto;
+import com.marcincho.companies_sm.dto.NewCompanyDto;
 import com.marcincho.companies_sm.entity.Company;
 import com.marcincho.companies_sm.exception.CompanyExistException;
 import com.marcincho.companies_sm.exception.ResourceNotFoundException;
@@ -21,12 +22,12 @@ public class CompanyServiceImpl implements ICompanyService{
 
 
     @Override
-    public void createCompany(CompanyDto companyDto) {
-        Optional<Company> companyExists = companyRepository.findByCompanyName(companyDto.getCompanyName());
+    public void createCompany(NewCompanyDto newCompanyDto) {
+        Optional<Company> companyExists = companyRepository.findByCompanyName(newCompanyDto.companyName());
         if(companyExists.isPresent()) {
             throw new CompanyExistException("Company already registered with given name");
         }
-        Company company = CompanyMapper.mapToCompany(companyDto, new Company());
+        Company company = CompanyMapper.mapToNewCompany(newCompanyDto, new Company());
         companyRepository.save(company);
     }
 
@@ -36,18 +37,18 @@ public class CompanyServiceImpl implements ICompanyService{
      */
     @Override
     public Optional<Company> fetchCompanyById(Long id) {
-        return Optional.empty();
+        return companyRepository.findById(id);
     }
 
 
     @Override
     public boolean updateCompany(CompanyDto companyDto) {
-        return false;
+        return companyRepository.e
     }
 
     @Override
     public boolean deleteCompany(Long id) {
-        Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company" , "Id", id));
+        Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company" , "Id", id.toString()));
         companyRepository.deleteById(id);
         return true;
     }
@@ -60,5 +61,14 @@ public class CompanyServiceImpl implements ICompanyService{
     public Optional<List<Company>> fetchCompaniesByCompanyType(String companyType) {
         return companyRepository.findByCompanyType(companyType);
     }
+
+    /**
+     * @return
+     */
+    @Override
+    public Optional<List<Company>> fetchAllCompanies() {
+        return Optional.of(companyRepository.findAll());
+    }
+
 
 }
