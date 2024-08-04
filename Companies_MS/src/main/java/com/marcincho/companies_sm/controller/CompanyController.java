@@ -44,7 +44,20 @@ public class CompanyController {
 
     @PutMapping("id/{id}")
     public ResponseEntity<ResponseDto> updateCompany(@Valid @RequestBody CompanyDto companyDto, @PathVariable Long id) {
-        boolean = iCompanyService.updateCompany(companyDto);
+        boolean isUpdated = iCompanyService.updateCompany(companyDto, id);
+        if (isUpdated) {
+            return ResponseEntity.ok(new ResponseDto("200", "Company updated"));
+        } else {
+            return ResponseEntity.status(417).body(new ResponseDto("417", "Operation failed"));
+        }
+    }
+    @DeleteMapping("id/{id}")
+    public ResponseEntity<ResponseDto> deleteCompany(@PathVariable Long id) {
+        boolean isDeleted = iCompanyService.deleteCompany(id);
+        if (isDeleted) {
+            return ResponseEntity.ok(new ResponseDto("200", "Company deleted"));
+        }
+        return ResponseEntity.status(417).body(new ResponseDto("417", "Operation failed"));
     }
 
 

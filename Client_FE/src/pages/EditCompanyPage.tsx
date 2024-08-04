@@ -23,7 +23,7 @@ export const EditCompanyPage = ({
   const submitForm = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     const edtCompany: ICompany = {
-      id: Number(id),
+      companyId: Number(id),
       companyName,
       companyType,
       description,
@@ -35,7 +35,25 @@ export const EditCompanyPage = ({
     console.log(edtCompany);
     updateCompany(edtCompany);
     toast.success("Company added!");
-    return navigate("/");
+    return navigate("/companies");
+  };
+
+  const deleteClick = async (id: string | undefined) => {
+    const confirm = window.confirm(
+      "Are you sure? This will delete company " + id
+    );
+    if (!confirm) return;
+
+    const request = await fetch(`http://localhost:8090/company/id/${id}`, {
+      method: "DELETE",
+    });
+
+    if (request.ok) {
+      toast.success("Company deleted!");
+    } else {
+      toast.error("Failed to delete company");
+    }
+    return navigate("/companies");
   };
 
   return (
@@ -153,12 +171,21 @@ export const EditCompanyPage = ({
                 className="border rounded w-full py-2 px-3 mb-2"
               />
             </div>
-            <div>
+            <div className="my-2">
               <button
                 className="bg-indigo-400 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Add Company
+                Edit Company
+              </button>
+            </div>
+            <div className="my-2">
+              <button
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                type="button"
+                onClick={() => deleteClick(id)}
+              >
+                Delete Company
               </button>
             </div>
           </form>

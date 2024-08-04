@@ -36,4 +36,19 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(project);
     }
 
+    /**
+     * @param project
+     * @return
+     */
+    @Override
+    public boolean updateProject(Project project) {
+        boolean exists = projectRepository.existsById(project.getId());
+        if (exists) {
+            projectRepository.save(project);
+        } else {
+            throw new RuntimeException("Cannot find the project");
+        }
+        return exists;
+    }
+
 }

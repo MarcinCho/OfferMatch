@@ -13,7 +13,7 @@ public interface ICompanyService {
 
     Optional<Company> fetchCompanyById(Long id);
 
-    boolean updateCompany(CompanyDto companyDto);
+    boolean updateCompany(CompanyDto companyDto, Long id);
 
     boolean deleteCompany(Long id);
 

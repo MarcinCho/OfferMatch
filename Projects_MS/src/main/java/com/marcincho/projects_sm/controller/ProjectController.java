@@ -6,22 +6,13 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.marcincho.projects_sm.entity.Project;
 import com.marcincho.projects_sm.repository.ProjectRepository;
 import com.marcincho.projects_sm.service.ProjectService;
 
 import lombok.AllArgsConstructor;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @CrossOrigin
@@ -50,6 +41,11 @@ public class ProjectController {
     @DeleteMapping("/project/{id}")
     public void deleteProject(@PathVariable String id) {
         projectService.deleteProject(id);
+    }
+
+    @PutMapping("/project/{id}")
+    public boolean updateProject(@PathVariable String id, @RequestBody Project project) {
+        return projectService.updateProject(project);
     }
 
 }

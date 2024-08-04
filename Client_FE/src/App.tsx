@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
-  LoaderFunctionArgs,
   Route,
   RouterProvider,
 } from "react-router-dom";
@@ -17,6 +16,9 @@ import { AddCompanyPage } from "./pages/AddCompanyPage";
 import { ICompany } from "./models/ICompany";
 import { EditCompanyPage } from "./pages/EditCompanyPage";
 import { companyLoader } from "./components/companyLoader";
+import { EditProjectPage } from "./pages/EditProjectPage";
+import { CompaniesPage } from "./pages/CompaniesPage";
+import { SingleCompanyPage } from "./pages/SingleCompanyPage";
 
 const addProject = async (project: IProject) => {
   const ppp = await fetch("http://localhost:8080/api/project", {
@@ -46,26 +48,27 @@ const addCompany = async (company: {
   return ppp;
 };
 
-// const editCompany = async (company: ICompany) => {
-//   console.log(company);
-//   const ppp = await fetch("http://localhost:8090/company/", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(company),
-//   });
-//   console.log(company);
-//   return ppp;
-// };
-
 const updateCompany = async (company: ICompany) => {
-  const res = await fetch(`http://localhost:8090/company/id/${company.id}`, {
+  const res = await fetch(
+    `http://localhost:8090/company/id/${company.companyId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(company),
+    }
+  );
+  return res;
+};
+
+const updateProject = async (project: IProject) => {
+  const res = await fetch(`http://localhost:8080/api/project/${project.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(company),
+    body: JSON.stringify(project),
   });
   return res;
 };
@@ -81,6 +84,11 @@ export const App = () => {
           element={<AddProjectPage addProject={addProject} />}
         />
         <Route
+          path="/project/edit/:id"
+          element={<EditProjectPage updateProject={updateProject} />}
+          loader={projectLoader}
+        />
+        <Route
           path="/company/add"
           element={<AddCompanyPage addCompany={addCompany} />}
         />
@@ -92,12 +100,15 @@ export const App = () => {
         <Route
           path="/project/:id"
           element={<SingleProjectPage />}
-          loader={(args: LoaderFunctionArgs<unknown>) => {
-            const { params } = args;
-            return projectLoader({ params: { id: params.id || "" } });
-          }}
+          loader={projectLoader}
         />
-        <Route path="/project" element={<ProjectsPage />} />
+        <Route
+          path="/company/:id"
+          element={<SingleCompanyPage />}
+          loader={companyLoader}
+        />
+        <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/companies" element={<CompaniesPage />} />
       </Route>
     )
   );

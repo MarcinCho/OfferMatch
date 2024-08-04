@@ -1,7 +1,7 @@
 import { Key } from "react";
 
 export interface IProject {
-  [x: string]: Key | null | undefined;
+  [id: string]: Key | null | undefined;
   title: string;
   type: string;
   description: string;

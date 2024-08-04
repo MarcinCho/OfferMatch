@@ -26,7 +26,7 @@ export const AddCompanyPage = ({
     } = { companyName, email, contactPerson };
     addCompany(newCompany);
     toast.success("Company added!");
-    return navigate("/company");
+    return navigate("/companies");
   };
 
   return (

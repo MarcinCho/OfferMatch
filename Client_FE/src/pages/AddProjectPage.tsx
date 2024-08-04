@@ -36,7 +36,7 @@ export const AddProjectPage = ({
     };
     addProject(newProject);
     toast.success("Project added!");
-    return navigate("/project");
+    return navigate("/projects");
   };
 
   return (

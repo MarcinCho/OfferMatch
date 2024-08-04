@@ -42,8 +42,14 @@ public class CompanyServiceImpl implements ICompanyService{
 
 
     @Override
-    public boolean updateCompany(CompanyDto companyDto) {
-        return companyRepository.e
+    public boolean updateCompany(CompanyDto companyDto, Long id) {
+        boolean isUpdated = false;
+        Company company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id: ", id.toString()));
+        CompanyMapper.mapToCompany(companyDto, company);
+        companyRepository.save(company);
+        isUpdated = true;
+
+        return  isUpdated;
     }
 
     @Override
