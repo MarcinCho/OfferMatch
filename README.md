@@ -15,7 +15,7 @@ An app utilizing microservices architecture.
 - Mongo DB (Project_MS)
 - PostgreSQL (Companies_MS)
 
-## Run Locally
+<!-- ## Run Locally
 
 Clone the project
 
@@ -74,7 +74,7 @@ Start the server
 #### add(num1, num2)
 
 Takes two numbers and returns the sum.
-
+ -->
 
 
 
