@@ -7,7 +7,7 @@ spring:
   datasource:
     username: match
     password: service
-    url: jdbc:postgresql://localhost:5432/match
+    url: jdbc:postgresql://192.168.33.15:5434/match
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -36,14 +36,14 @@ management:
 #  shutdown:
 #    enabled: true
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetchRegistry: true
-    registerWithEureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8070/eureka
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetchRegistry: true
+#    registerWithEureka: true
+#    serviceUrl:
+#      defaultZone: http://localhost:8070/eureka
 
 info:
   app:

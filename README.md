@@ -1,80 +1,75 @@
 # Service Match
 
-An app utilizing microservices architecture.
+An app build with Spring Boot microservices and React client.
 
+Service match suppose to bridge clients, projects and companies.
+Client creates a project, and adds details. Companies can view the projects and respond with a message or an offer.
+Client can view companies and their contact info. 
 
 ## Tech Stack
 
-**Companies_MS:** Java, Spring Boot 3,
+**Backend:** Java, Spring Boot 3.  
+Used libraries:
 
-**Project_MS:** Java, Spring Boot 3,
 
-**Client_FE:** TypeScript, React, Tailwind CSS, PrimeFaces (UI) 
+**Frontend:** TypeScript, React, Tailwind CSS, PrimeFaces (UI)
 
 **Databases and other**
 - Mongo DB (Project_MS)
 - PostgreSQL (Companies_MS)
 
-<!-- ## Run Locally
+## Run Locally
 
-Clone the project
+### Run with Docker compose
+Requierments:
+- Docker
+
+1. Copy this repository
+```bash
+  git clone https://github.com/MarcinCho/Service_Match
+```
+
+2. Go to Scripts folder
+```bash
+  cd Service_Match/Scripts
+```
+3. Run Docker Compose file, (It may take a while to download all images)
+```bash
+#docker compose up (I'm still working on it)
+```
+
+#### Run with script.
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/MarcinCho/Service_Match
 ```
 
 Go to the project directory
 
 ```bash
-  cd my-project
+  cd Service_Match
 ```
 
-Install dependencies
-
+Give run permission to start_microservices.sh
 ```bash
-  npm install
+chmod +x start-projects.sh
 ```
-
-Start the server
-
+Run all backend services (Script uses tmux)
 ```bash
-  npm run start
+./Scripts/start_microservices.sh
+```
+Follow the instructions in terminal to switch between microservices.
+```bash
+console output:
+INFO: to access session use: tmux attach -t <project_folder>/
+INFO: to detach from session use ctrl + b, then d
+INFO: to close Spring Boot app use ctrl + d
+INFO: to kill all use tmux kill-server
 ```
 
 
-## Roadmap
-
-- Additional browser support
-
-- Add more integrations
 
 
-## API Reference
-
-#### Get all items
-
-```http
-  GET /api/items
-```
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
-
-#### Get item
-
-```http
-  GET /api/items/${id}
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | **Required**. Id of item to fetch |
-
-#### add(num1, num2)
-
-Takes two numbers and returns the sum.
- -->
 
 
 
