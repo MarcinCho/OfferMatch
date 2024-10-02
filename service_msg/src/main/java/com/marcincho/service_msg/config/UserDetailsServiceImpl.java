@@ -1,29 +1,43 @@
 package com.marcincho.service_msg.config;
 
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
+import com.marcincho.service_msg.entity.User;
+import com.marcincho.service_msg.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-@AllArgsConstructor
-@Builder
-@Data
-public class UserDetailsServiceImpl implements UserDetails {
+    private final UserRepository userRepository;
 
-    private final Long id;
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    private String password;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    private final String username;
-    private final String email;
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User -> " + username + " not found"));
 
-    private final Set<GrantedAuthority> authorities;
+        Set<GrantedAuthority> authorities =
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toSet());
 
-    private final boolean accountNotExpired;
-
-    private final boolean accountNonLocked;
-
+        return UserDetailsImpl.builder()
+                .username(user.getUsername())
+                .accountNotExpired(true)
+                .accountNonLocked(true)
+                .password(user.getPassword())
+                .authorities(authorities)
+                .id(user.getId())
+                .build();
+    }
 }
