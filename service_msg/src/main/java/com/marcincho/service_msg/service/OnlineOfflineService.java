@@ -2,6 +2,7 @@ package com.marcincho.service_msg.service;
 
 import com.marcincho.service_msg.config.UserDetailsImpl;
 import com.marcincho.service_msg.entity.Conversation;
+import com.marcincho.service_msg.entity.UserEnt;
 import com.marcincho.service_msg.models.*;
 import com.marcincho.service_msg.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +100,33 @@ public class OnlineOfflineService {
                 .toList();
     }
 
-    public void notifySender(UUID user, List<Conversation> conversations, MessageDeliveryStatusEnum msgStatus) {
+    public void notifySender(UUID userId, List<Conversation> conversations, MessageDeliveryStatusEnum msgStatus) {
+        if (!isUserOnline(userId)) {
+            log.info("{} not online saving msg", userId.toString());
+            return;
+        }
+        List<MessageDeliveryStatusUpdate> messageDeliveryStatusUpdates = conversations.stream()
+                .map(e ->
+                        MessageDeliveryStatusUpdate.builder()
+                                .id(e.getId())
+                                .messageDeliveryStatusEnum(msgStatus)
+                                .content(e.getContent())
+                                .build())
+                .toList();
+        conversations.forEach( conv ->
+                simpOperations.convertAndSend(
+                        "/topid/" + userId, ChatMessage.builder()
+                                .id(conv.getId())
+                                .messageDeliveryStatusUpdates(messageDeliveryStatusUpdates)
+                                .type(MessageTypeInfo.MESSAGE_DELIVERY_UPDATE)
+                                .content(conv.getContent())
+                                .build()));
+    }
+
+    public Map<String, Set<String>> getUserSubscribed() {
+        Map<String, Set<String>> result = new HashMap<>();
+        List<UserEnt> users = userRepository.findAllById(userSubscriptions.keySet());
+        users.forEach(user -> result.put(user.getUsername(), userSubscriptions.get(user.getId())));
+        return result;
     }
 }

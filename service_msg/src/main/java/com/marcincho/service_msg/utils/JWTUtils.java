@@ -25,8 +25,8 @@ public class JWTUtils {
     @Value("info.marcincho.secret")
     private String jwtSecret;
 
-    @Value("info.marcincho.expiration")
-    private Long jwtExpirationMs;
+//    @Value("info.marcincho.expiration")
+    private Long jwtExpirationMs = 7200000L;
 
     public String generateJwtToken(Authentication authentication) {
 

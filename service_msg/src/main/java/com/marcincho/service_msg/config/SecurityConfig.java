@@ -48,6 +48,7 @@ public class SecurityConfig {
             return authConfig.getAuthenticationManager();
     }
 
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -55,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         requestMatcher ->
                         requestMatcher.requestMatchers(
-                                "/api/auth/login", "/api/auth/token", "/api/auth/register" , "stomp", "/ws")
+                                "/api/auth/login", "/api/auth/token", "/api/auth/signin" , "stomp", "/ws")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS,"/**")
                                 .permitAll()

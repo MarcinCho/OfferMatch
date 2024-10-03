@@ -1,4 +1,4 @@
-package com.marcincho.service_msg.mapper;
+package com.marcincho.service_msg.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

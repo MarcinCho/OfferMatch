@@ -2,7 +2,7 @@ package com.marcincho.service_msg.mapper;
 
 import com.marcincho.service_msg.config.UserDetailsImpl;
 import com.marcincho.service_msg.entity.Conversation;
-import com.marcincho.service_msg.entity.User;
+import com.marcincho.service_msg.entity.UserEnt;
 import com.marcincho.service_msg.models.ChatMessage;
 import com.marcincho.service_msg.models.MessageTypeInfo;
 import com.marcincho.service_msg.repository.UserRepository;
@@ -24,7 +24,7 @@ public class ChatMessageMapper {
 
     public List<ChatMessage> toChatMessages(List<Conversation> conversations, UserDetailsImpl userDetails, MessageTypeInfo messageTypeInfo) {
         List<UUID> fromUserIds = conversations.stream().map(Conversation::getFromUser).toList();
-        Map<UUID, String> fromUserNames = userRepository.findAllById(fromUserIds).stream().collect(Collectors.toMap(User::getId, User::getUsername));
+        Map<UUID, String> fromUserNames = userRepository.findAllById(fromUserIds).stream().collect(Collectors.toMap(UserEnt::getId, UserEnt::getUsername));
 
         return conversations.stream().map(e -> toChatMessage(e, userDetails, fromUserNames, messageTypeInfo)).toList();
 

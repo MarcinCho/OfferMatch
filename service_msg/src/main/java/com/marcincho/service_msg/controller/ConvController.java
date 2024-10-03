@@ -1,7 +1,7 @@
 package com.marcincho.service_msg.controller;
 
 
-import com.marcincho.service_msg.mapper.UnseenMessageCountResponse;
+import com.marcincho.service_msg.models.UnseenMessageCountResponse;
 import com.marcincho.service_msg.models.ChatMessage;
 import com.marcincho.service_msg.models.UserConnection;
 import com.marcincho.service_msg.service.ConvService;

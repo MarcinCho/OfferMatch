@@ -2,9 +2,9 @@ package com.marcincho.service_msg.service;
 
 import com.marcincho.service_msg.config.UserDetailsImpl;
 import com.marcincho.service_msg.entity.Conversation;
-import com.marcincho.service_msg.entity.User;
+import com.marcincho.service_msg.entity.UserEnt;
 import com.marcincho.service_msg.mapper.ChatMessageMapper;
-import com.marcincho.service_msg.mapper.UnseenMessageCountResponse;
+import com.marcincho.service_msg.models.UnseenMessageCountResponse;
 import com.marcincho.service_msg.models.ChatMessage;
 import com.marcincho.service_msg.models.MessageDeliveryStatusEnum;
 import com.marcincho.service_msg.models.MessageTypeInfo;
@@ -14,7 +14,6 @@ import com.marcincho.service_msg.repository.UserRepository;
 import com.marcincho.service_msg.utils.SecurityUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.NotFound;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -32,7 +31,6 @@ public class ConvService {
     private final ChatMessageMapper chatMessageMapper;
     private final ConversationRepository conversationRepository;
     private final OnlineOfflineService onlineOfflineService;
-    private final SimpMessageSendingOperations simpOperations;
 
 
     public ConvService(UserRepository userRepository, SecurityUtils securityUtils, ChatMessageMapper chatMessageMapper, ConversationRepository conversationRepository, OnlineOfflineService onlineOfflineService, SimpMessageSendingOperations simpOperations) {
@@ -41,20 +39,20 @@ public class ConvService {
         this.chatMessageMapper = chatMessageMapper;
         this.conversationRepository = conversationRepository;
         this.onlineOfflineService = onlineOfflineService;
-        this.simpOperations = simpOperations;
     }
 
     public List<UserConnection> getUserContacts() {
         UserDetailsImpl userDetails = securityUtils.getUser();
         String username = userDetails.getUsername();
-        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException(username));
-        List<User> contacts = userRepository.findAllByUsernameNot(username);
-        return contacts.stream().map(user -> UserConnection.builder()
-                .connectionId(user.getId())
-                        .connectionUsername(user.getUsername())
-                        .convID(getConvId(currentUser.getId(), user.getId()))
+        UserEnt
+                currentUserEnt = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException(username));
+        List<UserEnt> contacts = userRepository.findAllByUsernameNot(username);
+        return contacts.stream().map(userEnt -> UserConnection.builder()
+                .connectionId(userEnt.getId())
+                        .connectionUsername(userEnt.getUsername())
+                        .convID(getConvId(currentUserEnt.getId(), userEnt.getId()))
                         .seen(false)
-                        .isOnline(onlineOfflineService.isUserOnline(user.getId()))
+                        .isOnline(onlineOfflineService.isUserOnline(userEnt.getId()))
                         .build())
                 .toList();
     }

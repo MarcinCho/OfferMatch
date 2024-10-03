@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,7 @@ public class RestApiTokenFilter extends OncePerRequestFilter {
     private final JWTUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
     public RestApiTokenFilter(JWTUtils jwtUtils, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
@@ -45,6 +47,8 @@ public class RestApiTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.info("Cannot set authentication : {}", e );
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {

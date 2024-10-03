@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class RoleEnt {
     @Id
     private UUID id;
 
