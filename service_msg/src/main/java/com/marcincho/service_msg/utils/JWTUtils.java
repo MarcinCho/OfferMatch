@@ -1,10 +1,7 @@
 package com.marcincho.service_msg.utils;
 
 import com.marcincho.service_msg.config.UserDetailsImpl;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +22,11 @@ public class JWTUtils {
     @Value("info.marcincho.secret")
     private String jwtSecret;
 
-//    @Value("info.marcincho.expiration")
-    private Long jwtExpirationMs = 7200000L;
-
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        //    @Value("info.marcincho.expiration")
+        Long jwtExpirationMs = 7200000L;
         return Jwts.builder()
                 .subject(userPrincipal.getUsername())
                 .issuedAt(new Date())
@@ -41,7 +37,8 @@ public class JWTUtils {
     }
 
     private SecretKey key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        return Jwts.SIG.HS512.key().build();
+
     }
 
     public String getUserNameFromJwtToken(String token) {
