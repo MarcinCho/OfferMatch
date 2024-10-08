@@ -19,6 +19,6 @@ public interface ICompanyService {
 
     Optional<List<Company>> fetchCompaniesByCompanyType(String companyType);
 
-    Optional<List<Company>> fetchAllCompanies();
+    List<Company> fetchAllCompanies();
 
 }

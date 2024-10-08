@@ -33,7 +33,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public Optional<List<Company>> getAllCompanies() {
+    public List<Company> getAllCompanies() {
         return iCompanyService.fetchAllCompanies();
     }
 //

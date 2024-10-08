@@ -72,8 +72,8 @@ public class CompanyServiceImpl implements ICompanyService{
      * @return
      */
     @Override
-    public Optional<List<Company>> fetchAllCompanies() {
-        return Optional.of(companyRepository.findAll());
+    public List<Company> fetchAllCompanies() {
+        return companyRepository.findAll();
     }
 
 
