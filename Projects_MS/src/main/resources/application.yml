@@ -6,6 +6,8 @@ spring:
       host: "localhost"
       port: 27017
       database: "service_match"
+      user: smatch
+      password: servicematch
   cloud:
     config:
       enabled: false

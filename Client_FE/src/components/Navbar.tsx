@@ -34,8 +34,8 @@ export const Navbar = () => {
                 <NavLink to="/companies" className={linkClass}>
                   Companies
                 </NavLink>
-                <NavLink to="/project/add" className={linkClass}>
-                  Add Project
+                <NavLink to="/chat" className={linkClass}>
+                  Chat
                 </NavLink>
                 <NavLink to="/login" className={linkClass}>
                   Login
