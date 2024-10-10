@@ -76,5 +76,10 @@ public class CompanyServiceImpl implements ICompanyService{
         return companyRepository.findAll();
     }
 
+    @Override
+    public Optional<List<Company>> getCompaniesWithLimit(int limit) {
+        return companyRepository.findAllLimitedTo(limit);
+    }
+
 
 }

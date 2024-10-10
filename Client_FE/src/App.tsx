@@ -19,6 +19,7 @@ import { companyLoader } from "./components/companyLoader";
 import { EditProjectPage } from "./pages/EditProjectPage";
 import { CompaniesPage } from "./pages/CompaniesPage";
 import { SingleCompanyPage } from "./pages/SingleCompanyPage";
+import { ChatPage } from "./pages/ChatPage";
 
 const addProject = async (project: IProject) => {
   const ppp = await fetch("http://localhost:8080/api/project", {
@@ -97,6 +98,7 @@ export const App = () => {
           element={<EditCompanyPage updateCompany={updateCompany} />}
           loader={companyLoader}
         />
+        <Route path="/chat" element={<ChatPage />} />
         <Route
           path="/project/:id"
           element={<SingleProjectPage />}

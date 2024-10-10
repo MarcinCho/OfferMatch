@@ -21,4 +21,6 @@ public interface ICompanyService {
 
     List<Company> fetchAllCompanies();
 
+    Optional<List<Company>> getCompaniesWithLimit(int limit);
+
 }

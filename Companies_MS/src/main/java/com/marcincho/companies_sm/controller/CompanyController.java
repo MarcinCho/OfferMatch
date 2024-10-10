@@ -33,8 +33,9 @@ public class CompanyController {
     }
 
     @GetMapping
-    public List<Company> getAllCompanies() {
-        return iCompanyService.fetchAllCompanies();
+    public Optional<List<Company>> getAllCompanies() {
+//        return iCompanyService.fetchAllCompanies();
+        return iCompanyService.getCompaniesWithLimit(5);
     }
 //
     @GetMapping("id/{id}")
