@@ -33,11 +33,17 @@ public class RestApiTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
+            String jwt = authHeader.replace("Bearer ", "");
+//            String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            String username = "Alice";
+            log.info("jwt : {} username: {}", jwt, username);
+            if (!jwtUtils.validateJwtToken(jwt).isEmpty()) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -51,12 +57,12 @@ public class RestApiTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
-        String jwt = null;
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (token != null && token.length() > 6) {
-            jwt = token.substring(7);
-        }
-        return jwt;
+//    private String parseJwt(HttpServletRequest request) {
+//        String jwt = null;
+//        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+//        if (token != null && token.length() > 6) {
+//            jwt = token.substring(7);
+//        }
+//        return jwt;
     }
-}
+

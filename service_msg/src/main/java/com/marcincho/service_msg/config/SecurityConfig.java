@@ -12,10 +12,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableMethodSecurity
@@ -23,9 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
-
     private final AuthEntryPointJwt authEntryPointJwt;
-
     private final RestApiTokenFilter restApiTokenFilter;
 
 
@@ -64,11 +64,18 @@ public class SecurityConfig {
                                 .authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .authenticationProvider(daoAuthenticationProvider())
-                .addFilterBefore(restApiTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(restApiTokenFilter, UsernamePasswordAuthenticationFilter.class)
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 
-
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//
+//        configuration.setAllowedOrigins(List.of("http://localhost:8005"));
+//
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

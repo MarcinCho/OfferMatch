@@ -1,15 +1,11 @@
 package com.marcincho.service_msg.controller;
 
-
-import com.marcincho.service_msg.config.UserDetailsImpl;
-import com.marcincho.service_msg.entity.RoleEnt;
-import com.marcincho.service_msg.entity.UserEnt;
-import com.marcincho.service_msg.models.*;
-import com.marcincho.service_msg.repository.RoleRepository;
-import com.marcincho.service_msg.repository.UserRepository;
-import com.marcincho.service_msg.utils.JWTUtils;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,13 +13,29 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import com.marcincho.service_msg.config.UserDetailsImpl;
+import com.marcincho.service_msg.entity.RoleEnt;
+import com.marcincho.service_msg.entity.UserEnt;
+import com.marcincho.service_msg.models.ERole;
+import com.marcincho.service_msg.models.JwtResponse;
+import com.marcincho.service_msg.models.LoginRequestDto;
+import com.marcincho.service_msg.models.ResponseMessage;
+import com.marcincho.service_msg.models.SignupRequest;
+import com.marcincho.service_msg.repository.RoleRepository;
+import com.marcincho.service_msg.repository.UserRepository;
+import com.marcincho.service_msg.utils.JWTUtils;
 
-@CrossOrigin(origins = "*")
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -53,8 +65,8 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        JwtResponse jwtResponse =
-                JwtResponse.builder()
+        JwtResponse jwtResponse
+                = JwtResponse.builder()
                         .token(jwt)
                         .id(userDetails.getId())
                         .email(userDetails.getEmail())
@@ -70,7 +82,7 @@ public class AuthController {
         if (userRepository.existsByUsername(signupRequest.username())) {
             return ResponseEntity.badRequest().body(new ResponseMessage("Username is already taken.", new Date()));
         }
-        if (userRepository.existsByEmail(signupRequest.email())){
+        if (userRepository.existsByEmail(signupRequest.email())) {
             return ResponseEntity.badRequest().body(new ResponseMessage("Email is already in use.", new Date()));
         }
 
@@ -91,26 +103,26 @@ public class AuthController {
             reqRoles.forEach(
                     role -> {
                         switch (role) {
-                            case "ADMIN":
+                            case "ADMIN" -> {
                                 RoleEnt admin = roleRepository.findByName(ERole.ADMIN)
                                         .orElseThrow(NoSuchElementException::new);
                                 roles.add(admin);
-                                break;
-                            case "MODERATOR":
+                            }
+                            case "MODERATOR" -> {
                                 RoleEnt moderator = roleRepository.findByName(ERole.MODERATOR)
                                         .orElseThrow(NoSuchElementException::new);
                                 roles.add(moderator);
-                                break;
-                            case "COMPANY":
+                            }
+                            case "COMPANY" -> {
                                 RoleEnt company = roleRepository.findByName(ERole.COMPANY)
                                         .orElseThrow(NoSuchElementException::new);
                                 roles.add(company);
-                                break;
-                            default:
+                            }
+                            default -> {
                                 RoleEnt userRole = roleRepository.findByName(ERole.USER)
                                         .orElseThrow(NoSuchElementException::new);
                                 roles.add(userRole);
-                                break;
+                            }
                         }
                     }
             );
@@ -123,4 +135,3 @@ public class AuthController {
     }
 
 }
-

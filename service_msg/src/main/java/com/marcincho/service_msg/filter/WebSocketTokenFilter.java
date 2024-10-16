@@ -25,18 +25,18 @@ public class WebSocketTokenFilter implements ChannelInterceptor {
         this.userDetailsService = userDetailsService;
     }
 
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        if (StompCommand.CONNECT == Objects.requireNonNull(accessor).getCommand()) {
-            String jwt = jwtUtils.parseJwt(accessor);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                accessor.setUser(authentication);
-            }
-        }
-        return message;
-}
+//    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+//        final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+//        if (StompCommand.CONNECT == Objects.requireNonNull(accessor).getCommand()) {
+//            String jwt = jwtUtils.parseJwt(accessor);
+//            if (jwt != null && jwtUtils.validateJwtToken(jwt).) {
+//                String username = jwtUtils.getUserNameFromToken(jwt);
+//
+//                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//                accessor.setUser(authentication);
+//            }
+//        }
+//        return message;
+//}
 }

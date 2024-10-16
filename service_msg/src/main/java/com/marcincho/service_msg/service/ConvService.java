@@ -1,26 +1,31 @@
 package com.marcincho.service_msg.service;
 
-import com.marcincho.service_msg.config.UserDetailsImpl;
-import com.marcincho.service_msg.entity.Conversation;
-import com.marcincho.service_msg.entity.UserEnt;
-import com.marcincho.service_msg.mapper.ChatMessageMapper;
-import com.marcincho.service_msg.models.UnseenMessageCountResponse;
-import com.marcincho.service_msg.models.ChatMessage;
-import com.marcincho.service_msg.models.MessageDeliveryStatusEnum;
-import com.marcincho.service_msg.models.MessageTypeInfo;
-import com.marcincho.service_msg.models.UserConnection;
-import com.marcincho.service_msg.repository.ConversationRepository;
-import com.marcincho.service_msg.repository.UserRepository;
-import com.marcincho.service_msg.utils.SecurityUtils;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
-
+import com.marcincho.service_msg.config.UserDetailsImpl;
+import com.marcincho.service_msg.entity.Conversation;
+import com.marcincho.service_msg.entity.UserEnt;
+import com.marcincho.service_msg.mapper.ChatMessageMapper;
+import com.marcincho.service_msg.models.ChatMessage;
+import com.marcincho.service_msg.models.MessageDeliveryStatusEnum;
+import com.marcincho.service_msg.models.MessageTypeInfo;
+import com.marcincho.service_msg.models.UnseenMessageCountResponse;
+import com.marcincho.service_msg.models.UserConnection;
+import com.marcincho.service_msg.repository.ConversationRepository;
+import com.marcincho.service_msg.repository.UserRepository;
 import static com.marcincho.service_msg.utils.ConvUtils.getConvId;
+import com.marcincho.service_msg.utils.SecurityUtils;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -31,7 +36,6 @@ public class ConvService {
     private final ChatMessageMapper chatMessageMapper;
     private final ConversationRepository conversationRepository;
     private final OnlineOfflineService onlineOfflineService;
-
 
     public ConvService(UserRepository userRepository, SecurityUtils securityUtils, ChatMessageMapper chatMessageMapper, ConversationRepository conversationRepository, OnlineOfflineService onlineOfflineService, SimpMessageSendingOperations simpOperations) {
         this.userRepository = userRepository;
@@ -44,16 +48,15 @@ public class ConvService {
     public List<UserConnection> getUserContacts() {
         UserDetailsImpl userDetails = securityUtils.getUser();
         String username = userDetails.getUsername();
-        UserEnt
-                currentUserEnt = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException(username));
+        UserEnt currentUserEnt = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException(username));
         List<UserEnt> contacts = userRepository.findAllByUsernameNot(username);
         return contacts.stream().map(userEnt -> UserConnection.builder()
                 .connectionId(userEnt.getId())
-                        .connectionUsername(userEnt.getUsername())
-                        .convID(getConvId(currentUserEnt.getId(), userEnt.getId()))
-                        .seen(false)
-                        .isOnline(onlineOfflineService.isUserOnline(userEnt.getId()))
-                        .build())
+                .connectionUsername(userEnt.getUsername())
+                .convID(getConvId(currentUserEnt.getId(), userEnt.getId()))
+                .unSeen(0)
+                .isOnline(onlineOfflineService.isUserOnline(userEnt.getId()))
+                .build())
                 .toList();
     }
 
@@ -72,9 +75,9 @@ public class ConvService {
             log.info("There are unread messages for {}", userDetails.getUsername());
             unseenMessageCountByUser.forEach((user, conversations) -> {
                 result.add(UnseenMessageCountResponse.builder()
-                                   .count((long) conversations.size())
-                                   .fromUser(user)
-                                   .build());
+                        .count((long) conversations.size())
+                        .fromUser(user)
+                        .build());
                 updateMessageDelivery(user, conversations, MessageDeliveryStatusEnum.DELIVERED);
             });
         }
