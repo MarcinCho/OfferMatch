@@ -40,29 +40,21 @@ public class RestApiTokenFilter extends OncePerRequestFilter {
         }
         try {
             String jwt = authHeader.replace("Bearer ", "");
-//            String username = jwtUtils.getUserNameFromJwtToken(jwt);
-            String username = "Alice";
-            log.info("jwt : {} username: {}", jwt, username);
-            if (!jwtUtils.validateJwtToken(jwt).isEmpty()) {
+            String username = jwtUtils.getUsernameFromJwt(jwt);
+            if (username != null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken
+                        authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            logger.info("Cannot set authentication : {}", e );
+            logger.info("Cannot set authentication : {}", e);
         }
 
         filterChain.doFilter(request, response);
     }
+}
 
-//    private String parseJwt(HttpServletRequest request) {
-//        String jwt = null;
-//        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-//        if (token != null && token.length() > 6) {
-//            jwt = token.substring(7);
-//        }
-//        return jwt;
-    }
 

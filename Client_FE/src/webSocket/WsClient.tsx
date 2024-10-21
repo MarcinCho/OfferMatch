@@ -8,19 +8,25 @@ export class SocketClient {
   constructor(url: string, jwt: string) {
     this.url = url;
     this.jwt = jwt;
-    this.client = new Client();
-
-    this.client.configure({
+    this.client = new Client({
       brokerURL: url,
       connectHeaders: {
         Authorization: `Bearer ${jwt}`,
       },
-      onConnect: () => {
-        console.log("connected to WS!");
+      debug: function (str) {
+        console.log(str);
       },
+      reconnectDelay: 20000,
+      heartbeatIncoming: 0,
+      heartbeatOutgoing: 20000,
     });
+    if (this.jwt) {
+      this.client.activate();
+    }
 
-    this.client.activate;
+    this.client.onConnect = (frame) => {
+      console.log("We are connected." + frame);
+    };
   }
 
   get connected() {
@@ -53,7 +59,7 @@ export class SocketClient {
     });
   };
 
-  awaitConnection = async (awaitConnectionConfig: {
+  awaitConnection = async (awaitConnectionConfig?: {
     retries: number;
     curr: number;
     timeinterval: number;
@@ -61,18 +67,20 @@ export class SocketClient {
     const {
       retries = 3,
       curr = 0,
-      timeinterval = 100,
+      // timeinterval = 100,
     } = awaitConnectionConfig || {};
     return new Promise((resolve, reject) => {
-      console.log(timeinterval);
       setTimeout(() => {
         if (this.connected) {
+          console.log("We are connected to ws");
           resolve(this.connected);
         } else {
-          console.log(`Failed To connect retrying for the ${curr + 1}`);
-          if (curr >= retries) {
-            console.log("Failed to connect :(");
-            reject();
+          for (let i = 0; i <= retries; i++) {
+            console.log(`Failed To connect retrying for the ${curr + 1}`);
+            if (curr >= retries) {
+              console.log("Failed to connect :(");
+              reject();
+            }
           }
         }
       });

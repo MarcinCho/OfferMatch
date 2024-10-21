@@ -1,7 +1,8 @@
 import { BASE_URL_WS, LOGIN_URL_WS } from "../ConfigConstats";
 import { IChatMessage } from "../models/IChatMessage";
+import { IUserConnection } from "../models/IUserConnection";
 
-export class BackendClient {
+class BackendClient {
   jwt: string;
 
   constructor() {
@@ -17,25 +18,42 @@ export class BackendClient {
     }
   ) {
     if (!reqConf) {
-      reqConf = { method: "GET", headers: {} };
+      if (this.jwt) {
+        console.log("No config but with token.");
+        reqConf = {
+          method: "GET",
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${this.jwt}`,
+          },
+        };
+      } else {
+        reqConf = {
+          method: "GET",
+          headers: { "content-type": "application/json" },
+        };
+      }
     }
-    const headers = new Headers(reqConf.headers);
-    headers.append("content-type", "application/json");
-    headers.append("Authorization", `Bearer ${this.jwt}`);
-    reqConf.headers = headers;
 
+    console.log(reqConf);
+    console.log(`here should be a token = ${this.jwt}`);
     const response = await fetch(url, reqConf);
-    return response.json;
+    if (!response.ok) {
+      throw new Error(`Http error! status: ${response.status}`);
+    }
+
+    return response.json();
   }
 
-  async getFriends() {
-    return this.sendRequest(`${BASE_URL_WS}/api/conversation/friends`);
+  async getFriends(): Promise<IUserConnection[]> {
+    return this.sendRequest(`${BASE_URL_WS}/api/conv/contacts`);
   }
 
   login = async (loginRequestPayload: {
     username: string;
     password: string;
   }) => {
+    console.log(loginRequestPayload);
     return this.sendRequest(LOGIN_URL_WS, {
       method: "POST",
       body: JSON.stringify(loginRequestPayload),
@@ -45,8 +63,8 @@ export class BackendClient {
     });
   };
 
-  getUnseenMessages = async (fromUserId: number) => {
-    let url = `${BASE_URL_WS}/api/conversation/unseenMessages`;
+  getUnseenMessages = async (fromUserId?: number) => {
+    let url = `${BASE_URL_WS}/api/conv/unseenMessages`;
     if (fromUserId) {
       url = url + `/${fromUserId}`;
     }
@@ -63,3 +81,6 @@ export class BackendClient {
     });
   };
 }
+const backendClient = new BackendClient();
+
+export default backendClient;

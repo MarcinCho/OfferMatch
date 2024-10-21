@@ -35,7 +35,7 @@ import com.marcincho.service_msg.utils.JWTUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -69,7 +69,7 @@ public class AuthController {
                 = JwtResponse.builder()
                         .token(jwt)
                         .id(userDetails.getId())
-                        .email(userDetails.getEmail())
+                        .username(userDetails.getUsername())
                         .roles(roles)
                         .build();
 

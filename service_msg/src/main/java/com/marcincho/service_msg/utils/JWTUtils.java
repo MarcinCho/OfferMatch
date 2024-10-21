@@ -10,6 +10,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -44,23 +45,36 @@ public class JWTUtils {
                 .sign(algorithm);
     }
 
-    public String validateJwtToken(String token) throws JWTVerificationException {
+    public DecodedJWT validateJwtToken(String token) throws JWTVerificationException {
         try{
+            System.out.println("JWT: " + token);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(appName)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
-            return jwt.getSubject();
+            return verifier.verify(token);
         } catch (JWTVerificationException e) {
-            log.error("JWT Token Couldn't validate {} " , e);
-            return "";
+            log.error("JWT Token Couldn't validate {} " , e.getMessage());
+            return null;
         }
+    }
 
+    public String getUsernameFromJwt(String token){
+        // The function uses validateJwtToken, any return other than null validates token.
+        try {
+//            log.info("JWT: {}", token);
+            DecodedJWT jwt = validateJwtToken(token);
+            return jwt.getSubject();
+        } catch (JWTVerificationException e ) {
+            log.error("JWT cannot grab the subject " , e);
+            return null;
+        }
 
     }
 
-
-
+    public String parseStompHeader(StompHeaderAccessor accessor) {
+        String token = accessor.getFirstNativeHeader("Authorization");
+        return token != null ? token.replace("Bearer ", "") : null;
+    }
 
 
 //    public String generateJwtToken(Authentication authentication) {
